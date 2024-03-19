@@ -19,11 +19,11 @@ def iniciar_captura_trafego():
     os.system("sudo tcpdump -i any -w " + nome_arquivo + " &")
 
 def testar_conectividade_host(endereco_ip):
-    resposta = os.system("ping -c 1 " + endereco_ip)
-    if resposta == 0:
-        print("O host", endereco_ip, "esta online.")
-    else:
-        print("O host", endereco_ip, "esta offline.")
+    try:
+        subprocess.run(["ping", "-c", "1", endereco_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        print("O host", endereco_ip, "está online.")
+    except subprocess.CalledProcessError:
+        print("O host", endereco_ip, "está offline.")
 
 def testar_resposta_servico(endereco_ip, porta, nome_servico):
     print("Testando servico", nome_servico, "...")
@@ -31,7 +31,7 @@ def testar_resposta_servico(endereco_ip, porta, nome_servico):
     try:
         resultado = s.connect_ex((endereco_ip, porta))
         if resultado == 0:
-            print("O servico", nome_servico, "esta respondendo corretamente.")
+            print("O servico", nome_servico, "está respondendo corretamente.")
         else:
             print("Nao foi possivel conectar ao servico", nome_servico)
     finally:
