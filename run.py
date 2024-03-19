@@ -4,9 +4,9 @@ import os
 import subprocess
 import socket
 
-SERVIDOR_NOME_IP = "192.168.1.100"
+SERVIDOR_NOME_IP = "192.0.2.100"
 SERVIDOR_NOME_PORTA = 53
-SERVIDOR_WEB_IP = "192.168.1.101"
+SERVIDOR_WEB_IP = "203.0.113.200"
 SERVIDOR_WEB_PORTA = 80
 
 def imprimir_informacoes_servico():
@@ -19,19 +19,19 @@ def iniciar_captura_trafego():
     os.system("sudo tcpdump -i any -w " + nome_arquivo + " &")
 
 def testar_conectividade_host(endereco_ip):
-    try:
-        subprocess.run(["ping", "-c", "1", endereco_ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        print("O host", endereco_ip, "está online.")
-    except subprocess.CalledProcessError:
-        print("O host", endereco_ip, "está offline.")
-
+    resposta = os.system("ping -c 1 " + endereco_ip)
+    if resposta == 0:
+        print("O host", endereco_ip, "esta online.")
+    else:
+        print("O host", endereco_ip, "esta offline.")
+        
 def testar_resposta_servico(endereco_ip, porta, nome_servico):
     print("Testando servico", nome_servico, "...")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         resultado = s.connect_ex((endereco_ip, porta))
         if resultado == 0:
-            print("O servico", nome_servico, "está respondendo corretamente.")
+            print("O servico", nome_servico, "esta respondendo corretamente.")
         else:
             print("Nao foi possivel conectar ao servico", nome_servico)
     finally:
